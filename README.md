@@ -43,6 +43,7 @@ Since 4PACE is now available on PyPI, you can install the latest early access ve
 
 ```bash
 pip install 4pace
+```
 
 Note: Requires Python 3.10 or higher.
 
@@ -54,7 +55,7 @@ Note: Requires Python 3.10 or higher.
 1. Define your grid (config.yaml)
 Create a configuration file to specify your buses, machines, and lines:
 
-```bash
+```yaml
 Sbase: 100.0
 buses:
   - name: A01
@@ -82,11 +83,12 @@ branches:
     to_bus: B01
     R: 0.002
     X: 0.04
+```
 
 
 2. Run the Solver
 
-```bash
+```python
 from fourpace.psys import Grid # Professional Clean Import
 
 # Load your configuration
@@ -97,6 +99,7 @@ grid.solve()
 
 # Run Optimal Power Flow
 grid.eco_dispatch()
+```
 
 ---
 
