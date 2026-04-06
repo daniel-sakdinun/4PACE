@@ -1,0 +1,104 @@
+# ==========================================
+# Power System Grid Configuration
+# ==========================================
+Sbase: 510
+
+# --- Bus Definitions ---
+buses:
+  - name: A01
+    Vbase: 6.9
+    bus_type: Slack
+    components:
+      - type: SynchronousMachine
+        name: A01_G1
+        S_rated: 100
+        pf: 0.85
+        a: 500
+        b: 7
+        c: 0.004
+      - type: SynchronousMachine
+        name: A01_G2
+        S_rated: 100
+        pf: 0.85
+        a: 300
+        b: 6.8
+        c: 0.006
+      - type: SynchronousMachine
+        name: A01_G3
+        S_rated: 100
+        pf: 0.85
+        a: 400
+        b: 6.3
+        c: 0.009
+
+  - name: A02
+    Vbase: 6.9
+    bus_type: PV
+    components:
+      - type: SynchronousMachine
+        name: A02_G1
+        P: 80
+        S_rated: 100
+        pf: 0.85
+        a: 500
+        b: 6.4
+        c: 0.008
+      - type: SynchronousMachine
+        name: A02_G2
+        P: 80
+        S_rated: 100
+        pf: 0.85
+        a: 400
+        b: 7.2
+        c: 0.008
+      - type: SynchronousMachine
+        name: A02_G3
+        P: 80
+        S_rated: 100
+        pf: 0.85
+        a: 300
+        b: 6.9
+        c: 0.008
+
+  - name: B01
+    Vbase: 22
+    bus_type: PQ
+    components:
+      - type: Load
+        name: City_Mall
+        P: 240
+        Q: 80
+      - type: Load
+        name: Industrial_Park
+        P: 160
+        Q: 120
+        model: Z
+
+# --- Branch Definitions (Lines & Transformers) ---
+branches:
+  - type: Transformer
+    name: TR1_A01_B01
+    from_bus: A01
+    to_bus: B01
+    S_max: 400
+    R: 0.002
+    X: 0.04
+    tap_ratio: 1.0
+
+  - type: Transformer
+    name: TR2_A02_B01
+    from_bus: A02
+    to_bus: B01
+    S_max: 400
+    R: 0.002
+    X: 0.04
+    tap_ratio: 1.0
+
+  - type: TransmissionLine
+    name: Line_A01_A02
+    from_bus: A01
+    to_bus: A02
+    S_max: 300
+    R: 0.01
+    X: 0.05
+    B_shunt: 0.01
