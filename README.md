@@ -1,9 +1,16 @@
-# python_power_dispatch# ⚡ Python Power System Analysis & Dispatch Engine
+# ⚡ Four-Quadrant Power Analysis & Computational Engine (4PACE)
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A lightweight, high-performance Power System Analysis and Optimization engine built from scratch using pure Python. This project leverages Graph Theory and advanced Numerical Optimization to solve complex power grid problems.
+4PACE is a high-precision Power System Optimization Engine designed for analyzing and determining the most efficient operating points for electrical grids. Developed entirely in Python using only core scientific libraries, it ensures maximum computational efficiency and provides the flexibility needed to scale capabilities for modern grid demands.
+
+## 🧐 Why "4PACE"?
+
+The name 4PACE reflects the core pillars of this project:
+* **4-Quadrant:** The ability to simulate electrical equipment behavior across all four quadrants of active and reactive power, whether operating as a Generator, Motor, or Condenser.
+* **Power Analysis:** Comprehensive steady-state analysis powered by a robust Newton-Raphson solver.
+* **Computational** Engine: Driven by the mathematical prowess of NumPy and SciPy to ensure rapid numerical convergence.
 
 ## ✨ Key Features
 
@@ -16,7 +23,7 @@ A lightweight, high-performance Power System Analysis and Optimization engine bu
   * **Synchronous Machines:** Supports both Generator and Motor modes with PQ limits.
   * **Branch Models:** Pi-model Transmission Lines and Off-nominal Tap / Phase-shifting Transformers.
   * **Loads:** Supports Constant Power (PQ), Constant Current (I), and Constant Impedance (Z) models.
-* **Human-Readable Config:** Effortlessly load entire grid topologies via `YAML` or `JSON` without hardcoding Python scripts.
+* **Human-Readable Config:** Effortlessly load entire grid topologies via `YAML` without hardcoding Python scripts.
 
 ## 📦 Installation
 
@@ -25,4 +32,4 @@ Clone this repository and install the required dependencies. This engine is inte
 ```bash
 git clone [https://github.com/yourusername/python_power_dispatch.git](https://github.com/yourusername/python_power_dispatch.git)
 cd python_power_dispatch
-pip install numpy scipy networkx pyyaml
+pip install -r requirements.txt
