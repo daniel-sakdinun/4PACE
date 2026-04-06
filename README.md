@@ -16,7 +16,7 @@ The name 4PACE reflects the core pillars of this project:
 
 * **Network Topology Management:** Built on top of `networkx` for robust and intuitive graph-based grid modeling.
 * **Steady-State Analysis:** Accurate **Newton-Raphson Power Flow** algorithm for evaluating grid voltage and power distribution.
-* **Optimal Power Flow (OPF):** * **DC OPF:** Fast linear optimization for active power dispatch.
+* **Optimal Power Flow (OPF):**
   * **AC OPF:** Full non-linear optimization considering $I^2R$ losses, voltage limits, reactive power (Q), and branch flow limits ($S_{max}$).
 * **Economic Dispatch:** Lambda iteration method for minimizing generation fuel costs.
 * **Advanced Equipment Models:**
