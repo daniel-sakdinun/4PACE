@@ -78,6 +78,44 @@ class SynchronousMachine(BusComponent):
             return 0.0
         return self.b + (2 * self.c * self.P)
 
+class AsynchronousMachine(BusComponent):
+    def __init__(self, name: str, P_rated: float, V_rated: float,
+                 Rs: float, Xs: float, Rr: float, Xr: float, Xm: float,
+                 poles: int = 4, freq: float = 50.0,
+                 s: float = 0.02, load_type: str = 'constant_torque'):
+        super().__init__(name, P=0.0, Q=0.0)
+        
+        self.Rs, self.Xs = Rs, Xs
+        self.Rr, self.Xr = Rr, Xr
+        self.Xm = Xm
+        
+        self.P_rated = P_rated
+        self.V_rated = V_rated
+        self.poles = poles
+        self.freq = freq
+        self.s = s
+        self.load_type = load_type
+
+    def update_pq_from_slip(self, V_mag_pu: float, Sbase:float):
+        V_phase = (V_mag_pu * self.V_rated) / np.sqrt(3)
+        
+        Z_rotor = (self.Rr / self.s) + 1j*self.Xr
+        Z_parallel = (1j*self.Xm * Z_rotor) / (1j*self.Xm + Z_rotor)
+        Z_total = (self.Rs + 1j*self.Xs) + Z_parallel
+        
+        I_s = V_phase / Z_total
+        
+        S_motor = 3 * V_phase * np.conj(I_s)
+        
+        self.P = -S_motor.real / Sbase
+        self.Q = -S_motor.imag / Sbase
+
+    def cost(self) -> float:
+        return 0.0
+
+    def incremental_cost(self) -> float:
+        return 0.0
+
 class Load(BusComponent):
     def __init__(self, name: str, model: str ='P',
                  P: float = 0, Q: float = 0,
@@ -110,6 +148,24 @@ class Load(BusComponent):
         elif self.model == 'P':
             self.P = self.P_nom
             self.Q = self.Q_nom
+
+class Shunt(BusComponent):
+    def __init__(self, name: str, Q_nom: float = 0.0, V_nom: float = 1.0):
+        super().__init__(name, P=0.0, Q=Q_nom)
+        self.Q_nom = Q_nom
+        self.V_nom = V_nom
+
+    def update_voltage_dependence(self, V_mag: float):
+        """
+        อัปเดตค่า Q ตามแรงดันปัจจุบัน (Q = Q_nom * (V/V_nom)^2)
+        """
+        self.Q = self.Q_nom * (V_mag / self.V_nom)**2
+
+    def cost(self) -> float:
+        return 0.0
+
+    def incremental_cost(self) -> float:
+        return 0.0
 
 class Inverter(BusComponent):
     def __init__(self, name: str, S_max: float, 
@@ -150,7 +206,20 @@ class Transformer(BranchComponent):
     def __init__(self, name: str,
                  R: float, X: float,
                  tap_ratio: float = 1.0, phase_shift: float = 0.0,
-                 S_max: float | None = None):
+                 S_max: float | None = None,
+                 auto_tap: bool = False,
+                 controlled_bus: str | None = None,
+                 target_V: float = 1.0,
+                 tap_step: float = 0.0125,
+                 tap_min: float = 0.90,
+                 tap_max: float = 1.10):
         super().__init__(name, R, X, S_max)
         self.tap_ratio = tap_ratio
         self.phase_shift = phase_shift
+        
+        self.auto_tap = auto_tap
+        self.controlled_bus = controlled_bus
+        self.target_V = target_V
+        self.tap_step = tap_step
+        self.tap_min = tap_min
+        self.tap_max = tap_max

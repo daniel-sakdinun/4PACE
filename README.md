@@ -7,7 +7,7 @@
 
 > **⚠️ Early Access Notice**
 > 
-> This project is currently in **Early Access (Pre-v1.0.0)**. While the core engine is functional and capable of solving complex power flow and optimization problems, it is still undergoing significant development. Features may change, and bug reports or feedback are highly encouraged to help reach the stable v1.0.0 release.
+> This project is currently in **Early Access (v0.2.0a0)**. While the core engine is functional and capable of solving complex power flow and optimization problems, it is still undergoing significant development. Features may change, and bug reports or feedback are highly encouraged to help reach the stable v1.0.0 release.
 
 **4PACE** is a high-precision Power System Optimization Engine designed for analyzing and determining the most efficient operating points for electrical grids. Developed entirely in Python using only core scientific libraries, it ensures maximum computational efficiency and provides the flexibility needed to scale capabilities for modern grid demands.
 
@@ -17,21 +17,20 @@
 
 The name 4PACE reflects the core pillars of this project:
 * **4-Quadrant:** The ability to simulate electrical equipment behavior across all four quadrants of active and reactive power, whether operating as a Generator, Motor, or Condenser.
-* **Power Analysis:** Comprehensive steady-state analysis powered by a robust Newton-Raphson solver.
-* **Computational** Engine: Driven by the mathematical prowess of NumPy and SciPy to ensure rapid numerical convergence.
+* **Power Analysis:** Comprehensive steady-state analysis powered by robust algorithms like Fast Decoupled Power Flow (FDPF).
+* **Computational Engine:** Driven by the mathematical prowess of NumPy and SciPy to ensure rapid numerical convergence.
 
 ---
 
-## ✨ Key Features
-
 * **Network Topology Management:** Built on top of `networkx` for robust and intuitive graph-based grid modeling.
-* **Steady-State Analysis:** Accurate **Newton-Raphson Power Flow** algorithm for evaluating grid voltage and power distribution.
-* **Optimal Power Flow (OPF):**
-  * **AC OPF:** Full non-linear optimization considering $I^2R$ losses, voltage limits, reactive power (Q), and branch flow limits ($S_{max}$).
-* **Economic Dispatch:** Lambda iteration method for minimizing generation fuel costs.
+* **Advanced Steady-State Analysis:** Highly optimized **Fast Decoupled Power Flow (FDPF)** algorithm for rapid convergence, complete with **Dynamic Q-Limit Enforcement** (automatic PV to PQ bus switching).
+* **Optimal Power Flow (OPF):** Full non-linear AC OPF considering $I^2R$ losses, voltage bounds, reactive power (Q), and hard branch flow limits ($S_{max}$).
+* **Grid Security & Monitoring:** Automatic transmission line overload checking and load percentage reporting.
 * **Advanced Equipment Models:**
-  * **Synchronous Machines:** Supports both Generator and Motor modes with PQ limits.
-  * **Branch Models:** Pi-model Transmission Lines and Off-nominal Tap / Phase-shifting Transformers.
+  * **Synchronous Machines:** Supports Generator, Motor, and Condenser modes with strict PQ limits.
+  * **Asynchronous Machines (NEW):** Induction motor models featuring real-time slip ($s$) and torque-balance dynamics that actively respond to grid voltage variations.
+  * **Branch Models:** Pi-model Transmission Lines and **OLTC Transformers** (On-Load Tap Changers with automatic voltage regulation and tap step adjustments).
+  * **Shunts (NEW):** Capacitor banks and Reactors with voltage-dependent reactive power injection ($Q \propto V^2$).
   * **Loads:** Supports Constant Power (PQ), Constant Current (I), and Constant Impedance (Z) models.
 * **Human-Readable Config:** Effortlessly load entire grid topologies via `YAML` without hardcoding Python scripts.
 
@@ -53,7 +52,7 @@ Note: Requires Python 3.10 or higher.
 **4PACE** allows you to separate your grid configuration from your logic.
 
 1. Define your grid (config.yaml)
-Create a configuration file to specify your buses, machines, and lines:
+Create a configuration file to specify your buses, machines, lines, and advanced features like OLTC:
 
 ```yaml
 Sbase: 100.0
@@ -76,6 +75,9 @@ buses:
         name: City_Mall
         P: 240
         Q: 80
+      - type: Shunt
+        name: CapBank1
+        Q_nom: 50
 branches:
   - type: Transformer
     name: TR1
@@ -83,6 +85,9 @@ branches:
     to_bus: B01
     R: 0.002
     X: 0.04
+    auto_tap: true
+    controlled_bus: B01
+    target_V: 1.0
 ```
 
 
@@ -94,11 +99,14 @@ from fourpace.psys import Grid # Professional Clean Import
 # Load your configuration
 grid = Grid.load('config.yaml') 
 
-# Solve Power Flow
-grid.solve()
-
 # Run Optimal Power Flow
 grid.eco_dispatch()
+
+# Solve Fast Decoupled Power Flow (with OLTC & Q-Limits)
+grid.solve()
+
+# Check for Transmission Line Overloads
+grid.check_overload()
 ```
 
 ---
