@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "4pace"
+version = "0.1.0a1"
+authors = [
+  { name="daniel-sakdinun", email="sakdinun.thewana@gmail.com" },
+]
+description = "An open-source power system simulator driven by simple YAML configs. Take full control of the grid: integrate smart inverters, simulate severe faults, and optimize microgrid economics. Just remember: the grid's stability is counting on you."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "cvxpy",
+    "numpy",
+    "scipy",
+    "networkx",
+    "pyyaml",
+    "pandas",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/daniel-sakdinun/4PACE.git"
+"Document" = "https://4pace.readthedocs.io/"

@@ -1,0 +1,8 @@
+sphinx
+sphinx-rtd-theme
+cvxpy
+numpy
+scipy
+networkx
+pyyaml
+pandas
